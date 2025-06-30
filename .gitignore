@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+
+# Entorno virtual
+.venv/
+venv/
+env/
+ENV/
+
+# Archivos de configuración locales
+*.env
+*.ini
+*.toml
+*.cfg
+
+# Archivos de salida (Excel, temporales, etc)
+resultados/
+data/articulos_generados*.xlsx
+*.xlsx~
+*.bak
+*.tmp
+
+# Jupyter notebooks checkpoints (por si algún día usás)
+.ipynb_checkpoints
+
+# IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# macOS / Linux / Windows
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos de pruebas temporales
+test_*.xlsx
+prueba_*.xlsx
+
+# Archivos ocultos comunes
+*.swp
+*.swo
