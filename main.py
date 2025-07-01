@@ -9,19 +9,21 @@ ARCHIVO_SALIDA_TEMP = "resultados/progreso_parcial.xlsx"
 TAMANO_LOTE = 100  # artículos por bloque
 UMBRAL_PARCIAL = 300  # mínimo de artículos para guardar parciales
 
+COLUMNAS_REQUERIDAS = {
+    "codigo", "cod_fac", "descripcion", "ean", "costo_final",
+    "precio_venta_actual", "margen_actual", "precio_venta_futuro", "margen_futuro"
+}
+
 
 def main():
-    try:
-        tolerancia = float(
-            input("📉 Ingrese el porcentaje de tolerancia de desvío (ej. 10 para 10%): "))
-    except ValueError:
-        print("❌ Tolerancia inválida. Debe ser un número.")
-        return
-
     try:
         df = pd.read_excel(ARCHIVO_ENTRADA)
     except Exception as e:
         print(f"❌ Error leyendo el archivo: {e}")
+        return
+
+    if not COLUMNAS_REQUERIDAS.issubset(df.columns):
+        print("❌ El archivo no contiene todas las columnas requeridas.")
         return
 
     total_filas = len(df)
@@ -37,7 +39,7 @@ def main():
         print(f"🔄 Procesando artículos {inicio + 1} a {fin}...")
 
         try:
-            resultado_parcial = procesar_archivo_excel(bloque, tolerancia)
+            resultado_parcial = procesar_archivo_excel(bloque)
             resultados = pd.concat(
                 [resultados, resultado_parcial], ignore_index=True)
             if GUARDAR_PARCIAL:

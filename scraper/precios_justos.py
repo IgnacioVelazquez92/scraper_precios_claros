@@ -24,6 +24,7 @@ HEADERS = {
 
 def obtener_precios_por_ean(ean):
     resultados = []
+    nombre_producto = None
 
     # Dividimos en bloques de 20 sucursales (según cómo opera la web oficial)
     for i in range(0, len(SUCURSALES_TUCUMAN), 20):
@@ -40,6 +41,10 @@ def obtener_precios_por_ean(ean):
             response.raise_for_status()
             data = response.json()
 
+            # Obtener nombre del producto si no se capturó antes
+            if not nombre_producto:
+                nombre_producto = data.get("producto", {}).get("nombre")
+
             for s in data.get("sucursales", []):
                 if "message" in s:
                     continue  # sucursal sin stock
@@ -55,12 +60,12 @@ def obtener_precios_por_ean(ean):
         except Exception as e:
             print(f"⚠️ Otro error: {e}")
 
-        sleep(0.5)  # Pausa corta para evitar rate limit
+        sleep(1)  # Pausa más conservadora para evitar rate limit
 
-    return procesar_resultados(ean, resultados)
+    return procesar_resultados(ean, resultados, nombre_producto)
 
 
-def procesar_resultados(ean, resultados):
+def procesar_resultados(ean, resultados, nombre_producto=None):
     precios = [p[1] for p in resultados]
     if not precios:
         return {
@@ -68,7 +73,8 @@ def procesar_resultados(ean, resultados):
             "precio_promedio": None,
             "precio_min": None,
             "precio_max": None,
-            "ean_usado": ean
+            "ean_usado": ean,
+            "nombre": nombre_producto
         }
 
     return {
@@ -76,7 +82,8 @@ def procesar_resultados(ean, resultados):
         "precio_promedio": round(sum(precios) / len(precios), 2),
         "precio_min": min(precios),
         "precio_max": max(precios),
-        "ean_usado": ean
+        "ean_usado": ean,
+        "nombre": nombre_producto
     }
 
 
